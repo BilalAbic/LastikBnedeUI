@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from 'react'
 import Image from 'next/image'
-import FileUpload from '@/components/FileUpload'
 
 export default function Analysis() {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -12,19 +11,17 @@ export default function Analysis() {
   const [isForSale, setIsForSale] = useState<boolean>(false);
   const [healthStatus, setHealthStatus] = useState<number>(85);
 
-  const handleFileChange = (file: File | null) => {
-    // Clean up previous preview URL if it exists
-    if (previewUrl) {
-      URL.revokeObjectURL(previewUrl);
-    }
-    
-    setSelectedFile(file);
-    
-    if (file) {
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target.files && event.target.files[0]) {
+      const file = event.target.files[0];
+      // Clean up previous preview URL if it exists
+      if (previewUrl) {
+        URL.revokeObjectURL(previewUrl);
+      }
+      
+      setSelectedFile(file);
       const fileUrl = URL.createObjectURL(file);
       setPreviewUrl(fileUrl);
-    } else {
-      setPreviewUrl(null);
     }
   };
 
@@ -35,7 +32,7 @@ export default function Analysis() {
         URL.revokeObjectURL(previewUrl);
       }
     };
-  }, []);
+  }, [previewUrl]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
